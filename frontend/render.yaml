@@ -1,0 +1,32 @@
+services:
+  # Option A: Python FastAPI Backend on Render
+  - type: web
+    name: memory-forge-backend-python
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: PYTHONPATH=. uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: HINDSIGHT_API_KEY
+        sync: false
+      - key: HINDSIGHT_API_URL
+        value: https://api.hindsight.vectorize.io
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # Option B: Node.js / Express Backend on Render
+  - type: web
+    name: memory-forge-backend-node
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npx tsx server.ts
+    healthCheckPath: /health
+    envVars:
+      - key: HINDSIGHT_API_KEY
+        sync: false
+      - key: HINDSIGHT_API_URL
+        value: https://api.hindsight.vectorize.io
+      - key: GEMINI_API_KEY
+        sync: false
